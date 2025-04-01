@@ -1,35 +1,35 @@
 package com.example.taskmanager.domain;
 
-import java.util.Date;
+import jakarta.persistence.*;
+import java.time.LocalDate;
 
+@Entity
 public class Task {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String description;
-    private Date dueDate;
-    private int priority;  // Esimerkiksi 1 = korkea, 2 = keskitaso, 3 = matala
-    private String status; // Esimerkiksi "Kesken", "Valmis", "Ei aloitettu"
-    private Long userId;   // Viite käyttäjään, joka omistaa tehtävän
-    private Long categoryId; // Viite kategorian id:hen, johon tehtävä kuuluu
-    
-    
-    public Task() {
-    }
+    private LocalDate dueDate;
+    private int priority;
+    private String status;
 
-  
-    public Task(Long id, String name, String description, Date dueDate, int priority, String status, Long userId, Long categoryId) {
-        this.id = id;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    public Task() {}
+
+    public Task(String name, String description, LocalDate dueDate, int priority, String status, Category category) {
         this.name = name;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
         this.status = status;
-        this.userId = userId;
-        this.categoryId = categoryId;
+        this.category = category;
     }
 
-    // Getterit ja setterit
     public Long getId() {
         return id;
     }
@@ -54,11 +54,11 @@ public class Task {
         this.description = description;
     }
 
-    public Date getDueDate() {
+    public LocalDate getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
+    public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -78,34 +78,11 @@ public class Task {
         this.status = status;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    // ToString-metodi helpottamaan tehtävän tulostamista
-    @Override
-    public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", dueDate=" + dueDate +
-                ", priority=" + priority +
-                ", status='" + status + '\'' +
-                ", userId=" + userId +
-                ", categoryId=" + categoryId +
-                '}';
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
