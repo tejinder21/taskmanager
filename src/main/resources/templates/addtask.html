@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Task</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Add Task</h1>
+        <form action="#" th:action="@{/addtask}" th:object="${task}" method="post">
+            <div class="form-group">
+                <label for="name">Task Name</label>
+                <input type="text" id="name" name="name" class="form-control" th:field="*{name}" required>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" class="form-control" th:field="*{category}" required>
+                    <!-- Listaa kategoriat ja käytä ID:tä -->
+                    <option th:each="category : ${categories}" 
+                            th:value="${category.id}" 
+                            th:text="${category.name}" 
+                            th:selected="${task.category != null && task.category.id == category.id}">Category</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" class="form-control" th:field="*{description}" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="dueDate">Due Date</label>
+                <input type="date" id="dueDate" name="dueDate" class="form-control" th:field="*{dueDate}" required>
+            </div>
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <input type="number" id="priority" name="priority" class="form-control" th:field="*{priority}" required>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" name="status" class="form-control" th:field="*{status}">
+                    <option value="Not Started">Not Started</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Task</button>
+            <a href="/tasklist" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</body>
+</html>
