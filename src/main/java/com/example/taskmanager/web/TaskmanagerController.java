@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 public class TaskmanagerController {
 
@@ -17,13 +19,19 @@ public class TaskmanagerController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    // Näyttää tehtävälistan ja järjestää tehtävät prioriteetin mukaan
     @GetMapping("/tasklist")
     public String showTaskList(Model model) {
-        model.addAttribute("tasks", taskRepository.findAll());
+        List<Task> tasks = taskRepository.findAll();
+        
+        // Järjestetään tehtävät prioriteetin mukaan (pienin numero ensin)
+        tasks.sort((task1, task2) -> Integer.compare(task1.getPriority(), task2.getPriority()));
+
+        model.addAttribute("tasks", tasks);
         return "tasklist";
     }
 
-    // Uuden tehtävän lisääminen
+    // Lomake uuden tehtävän lisäämistä varten
     @GetMapping("/addtask")
     public String addTaskForm(Model model) {
         model.addAttribute("task", new Task());
@@ -31,13 +39,14 @@ public class TaskmanagerController {
         return "addtask";
     }
 
+    // Uuden tehtävän tallentaminen
     @PostMapping("/addtask")
     public String addTask(@ModelAttribute Task task) {
         taskRepository.save(task);
         return "redirect:/tasklist";
     }
 
-    // Tehtävän muokkaaminen
+    // Lomake tehtävän muokkaamista varten
     @GetMapping("/edit/{id}")
     public String editTask(@PathVariable Long id, Model model) {
         model.addAttribute("task", taskRepository.findById(id).orElse(null));
@@ -45,6 +54,7 @@ public class TaskmanagerController {
         return "edittask";
     }
 
+    // Tehtävän päivittäminen
     @PostMapping("/edit/{id}")
     public String updateTask(@PathVariable Long id, @ModelAttribute Task task) {
         task.setId(id); // Varmistetaan, että ID säilyy
