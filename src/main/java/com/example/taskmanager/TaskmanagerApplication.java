@@ -29,10 +29,13 @@ public class TaskmanagerApplication implements CommandLineRunner {
         Category workCategory = new Category("Work");
         Category homeCategory = new Category("Home");
         Category shoppingCategory = new Category("Shopping");
+        Category demoCategory = new Category("Demo");
+        
         
         categoryRepository.save(workCategory);
         categoryRepository.save(homeCategory);
         categoryRepository.save(shoppingCategory);
+        categoryRepository.save(demoCategory);
 
         // Create example tasks and assign categories
         Task task1 = new Task("Complete project report", "Finalize the report and send it to the client.",
