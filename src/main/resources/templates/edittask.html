@@ -1,52 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Task</title>
+    <title th:text="#{task.edit}">Edit Task</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.3/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container mx-auto mt-4 p-4">
-        <h1 class="text-xl font-semibold mb-4">Edit Task</h1>
-        <form action="#" th:action="@{/edit/{id}(id=${task.id})}" th:object="${task}" method="post">
-            <input type="hidden" th:field="*{id}">
-            <div class="mb-4">
-                <label for="name" class="block font-medium text-gray-700">Task Name</label>
-                <input type="text" id="name" name="name" class="w-full p-2 border border-gray-300 rounded" th:field="*{name}" required>
-            </div>
-            <div class="mb-4">
-                <label for="category" class="block font-medium text-gray-700">Category</label>
-                <select id="category" name="category" class="w-full p-2 border border-gray-300 rounded" th:field="*{category}" required>
-                    <option th:each="category : ${categories}" 
-                            th:value="${category.id}" 
-                            th:text="${category.name}" 
-                            th:selected="${task.category != null && task.category.id == category.id}">Category</option>
-                </select>
-            </div>
-            <div class="mb-4">
-                <label for="description" class="block font-medium text-gray-700">Description</label>
-                <textarea id="description" name="description" class="w-full p-2 border border-gray-300 rounded" th:field="*{description}" required></textarea>
-            </div>
-            <div class="mb-4">
-                <label for="dueDate" class="block font-medium text-gray-700">Due Date</label>
-                <input type="date" id="dueDate" name="dueDate" class="w-full p-2 border border-gray-300 rounded" th:field="*{dueDate}" required>
-            </div>
-            <div class="mb-4">
-                <label for="priority" class="block font-medium text-gray-700">Priority</label>
-                <input type="number" id="priority" name="priority" class="w-full p-2 border border-gray-300 rounded" th:field="*{priority}" required>
-            </div>
-            <div class="mb-4">
-                <label for="status" class="block font-medium text-gray-700">Status</label>
-                <select id="status" name="status" class="w-full p-2 border border-gray-300 rounded" th:field="*{status}">
-                    <option value="Not Started" th:selected="${task.status == 'Not Started'}">Not Started</option>
-                    <option value="In Progress" th:selected="${task.status == 'In Progress'}">In Progress</option>
-                    <option value="Completed" th:selected="${task.status == 'Completed'}">Completed</option>
-                </select>
-            </div>
-            <button type="submit" class="bg-green-500 text-white p-2 rounded hover:bg-green-700">Update Task</button>
-            <a href="/tasklist" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-700 ml-2">Cancel</a>
-        </form>
-    </div>
+<div class="container mx-auto mt-4 p-4">
+    <h1 class="text-xl font-semibold mb-4" th:text="#{task.edit}">Edit Task</h1>
+
+    <form action="#" th:action="@{/edit/{id}(id=${task.id})}" th:object="${task}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="mb-4">
+            <label for="name" class="block font-medium text-gray-700" th:text="#{task.name}">Task Name</label>
+            <input type="text" id="name" name="name" class="w-full p-2 border border-gray-300 rounded" th:field="*{name}" required>
+        </div>
+
+        <div class="mb-4">
+            <label for="category" class="block font-medium text-gray-700" th:text="#{task.category}">Category</label>
+            <select id="category" name="category" class="w-full p-2 border border-gray-300 rounded" th:field="*{category}" required>
+                <option th:each="category : ${categories}"
+                        th:value="${category.id}"
+                        th:text="${category.name}"
+                        th:selected="${task.category != null && task.category.id == category.id}">Category</option>
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label for="description" class="block font-medium text-gray-700" th:text="#{task.description}">Description</label>
+            <textarea id="description" name="description" class="w-full p-2 border border-gray-300 rounded" th:field="*{description}" required></textarea>
+        </div>
+
+        <div class="mb-4">
+            <label for="dueDate" class="block font-medium text-gray-700" th:text="#{task.dueDate}">Due Date</label>
+            <input type="date" id="dueDate" name="dueDate" class="w-full p-2 border border-gray-300 rounded" th:field="*{dueDate}" required>
+        </div>
+
+        <div class="mb-4">
+            <label for="priority" class="block font-medium text-gray-700" th:text="#{task.priority}">Priority</label>
+            <input type="number" id="priority" name="priority" class="w-full p-2 border border-gray-300 rounded" th:field="*{priority}" required>
+        </div>
+
+        <div class="mb-4">
+            <label for="status" class="block font-medium text-gray-700" th:text="#{task.status}">Status</label>
+            <select id="status" name="status" class="w-full p-2 border border-gray-300 rounded" th:field="*{status}">
+                <option value="Not Started" th:text="#{status.notStarted}" th:selected="${task.status == 'Not Started'}">Not Started</option>
+                <option value="In Progress" th:text="#{status.inProgress}" th:selected="${task.status == 'In Progress'}">In Progress</option>
+                <option value="Completed" th:text="#{status.completed}" th:selected="${task.status == 'Completed'}">Completed</option>
+            </select>
+        </div>
+
+        <div class="flex space-x-2">
+            <button type="submit" class="bg-green-500 text-white p-2 rounded hover:bg-green-700" th:text="#{task.save}">Update Task</button>
+            <a href="/tasklist" class="bg-gray-500 text-white p-2 rounded hover:bg-gray-700" th:text="#{task.cancel}">Cancel</a>
+        </div>
+    </form>
+</div>
 </body>
 </html>
