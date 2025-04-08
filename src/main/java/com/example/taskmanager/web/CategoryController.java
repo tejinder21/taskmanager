@@ -20,11 +20,19 @@ public class CategoryController {
         return "addcategory";
     }
 
+    // Kategoriat-listaus
+    @GetMapping("/categorylist")
+    public String showCategoryList(Model model) {
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "categorylist";
+    }
+
     // Uuden kategorian tallentaminen
     @PostMapping("/savecategory")
     public String saveCategory(@ModelAttribute Category category) {
         categoryRepository.save(category);
-        return "redirect:/tasklist"; // Voit vaihtaa tämän mihin tahansa näkymään, esim. "/categorylist" jos teet myöhemmin listauksen
+        return "redirect:/tasklist"; // Voit vaihtaa tämän mihin tahansa näkymään, esim. "/categorylist" jos teet
+                                     // myöhemmin listauksen
     }
 
     // Kategorian poistaminen
