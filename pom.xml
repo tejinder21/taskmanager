@@ -37,13 +37,15 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- Spring Boot DevTools -->
+		<!-- Spring Boot DevTools (Kommentoitu pois tuotannosta) -->
+		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
+		-->
 
 		<!-- Spring Boot Starter Test -->
 		<dependency>
