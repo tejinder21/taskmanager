@@ -38,14 +38,14 @@
 		</dependency>
 
 		<!-- Spring Boot DevTools (Kommentoitu pois tuotannosta) -->
-		<!--
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
-		-->
+		
 
 		<!-- Spring Boot Starter Test -->
 		<dependency>
