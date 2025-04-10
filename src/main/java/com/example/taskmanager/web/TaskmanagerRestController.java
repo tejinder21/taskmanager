@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @CrossOrigin  // Salli eri alkuperäiset pyynnöt (esim. frontend localhostilta)
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/tasks")  // Määritellään API-päätepiste
 public class TaskmanagerRestController {
 
     @Autowired
@@ -23,25 +23,25 @@ public class TaskmanagerRestController {
 
     // 1. Palauta kaikki tehtävät
     @GetMapping
-    public @ResponseBody List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll(); // Palauttaa kaikki tehtävät JSON-muodossa
     }
 
     // 2. Palauta yksi tehtävä ID:n perusteella
     @GetMapping("/{id}")
-    public @ResponseBody Optional<Task> getTaskById(@PathVariable("id") Long id) {
-        return taskRepository.findById(id);
+    public Optional<Task> getTaskById(@PathVariable("id") Long id) {
+        return taskRepository.findById(id); // Palauttaa tehtävän ID:n perusteella
     }
 
     // 3. Tallenna uusi tehtävä
     @PostMapping
-    public @ResponseBody Task saveTask(@RequestBody Task task) {
-        return taskRepository.save(task);
+    public Task saveTask(@RequestBody Task task) {
+        return taskRepository.save(task); // Tallentaa uuden tehtävän
     }
 
     // 4. Hae kaikki kategoriat
     @GetMapping("/categories")
-    public @ResponseBody List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public List<Category> getAllCategories() {
+        return categoryRepository.findAll(); // Palauttaa kaikki kategoriat
     }
 }

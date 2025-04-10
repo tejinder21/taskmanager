@@ -21,7 +21,7 @@ public class LocaleConfig implements WebMvcConfigurer {
         return localeResolver;
     }
 
-    // LocaleChangeInterceptor kuuntelee URL-parametrejä, kuten ?lang=en tai ?lang=fi
+    // LocaleChangeInterceptor kuuntelee URL-parametrejä, 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();

@@ -1,15 +1,15 @@
 package com.example.taskmanager;
 
-import com.example.taskmanager.domain.Category;
-import com.example.taskmanager.domain.CategoryRepository;
-import com.example.taskmanager.domain.Task;
-import com.example.taskmanager.domain.TaskRepository;
+import com.example.taskmanager.domain.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
+import java.util.List;
+
 @SpringBootApplication
 public class TaskmanagerApplication implements CommandLineRunner {
 
@@ -19,38 +19,35 @@ public class TaskmanagerApplication implements CommandLineRunner {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private UserRepository userRepository;  // Tämä on oikea tapa
+
     public static void main(String[] args) {
         SpringApplication.run(TaskmanagerApplication.class, args);
     }
 
     @Override
     public void run(String... args) throws Exception {
-        // kategoriat
+        // Kategoriat
         Category workCategory = new Category("Work");
         Category homeCategory = new Category("Home");
         Category shoppingCategory = new Category("Shopping");
-        Category demoCategory = new Category("Demo");
-        
-        
+
         categoryRepository.save(workCategory);
         categoryRepository.save(homeCategory);
         categoryRepository.save(shoppingCategory);
-        categoryRepository.save(demoCategory);
 
-        // Create example tasks and assign categories
-        Task task1 = new Task("Complete project report", "Finalize the report and send it to the client.",
-                LocalDate.of(2025, 3, 31), 1, "Not Started", workCategory);
-        
-        Task task2 = new Task("Buy groceries", "Purchase groceries for the week.",
-                LocalDate.of(2025, 3, 29), 2, "In Progress", homeCategory);
+        // Tehtävät
+        taskRepository.save(new Task("Complete project report", "Send to client",
+                LocalDate.of(2025, 3, 31), 1, "Not Started", workCategory));
+        taskRepository.save(new Task("Buy groceries", "Weekly groceries",
+                LocalDate.of(2025, 3, 29), 2, "In Progress", homeCategory));
+        taskRepository.save(new Task("Clean the house", "Do cleaning",
+                LocalDate.of(2025, 3, 28), 3, "Completed", homeCategory));
 
-        Task task3 = new Task("Clean the house", "Do the weekly house cleaning.",
-                LocalDate.of(2025, 3, 28), 3, "Completed", homeCategory);
-
-        taskRepository.save(task1);
-        taskRepository.save(task2);
-        taskRepository.save(task3);
-
-        System.out.println("Example tasks and categories inserted into the database.");
+        // Käyttäjät (salasana = käyttäjätunnus)
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        userRepository.save(new AppUser("user", encoder.encode("user"), List.of("ROLE_USER")));
+        userRepository.save(new AppUser("admin", encoder.encode("admin"), List.of("ROLE_ADMIN")));
     }
 }
