@@ -22,13 +22,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Etsii käyttäjä tietokannasta
         AppUser user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Käyttäjää ei löytynyt: " + username));
 
+        // Muodostetaan käyttäjän roolit
         List<SimpleGrantedAuthority> authorities = user.getRoles().stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
+        // Palautetaan User-olio, joka sisältää käyttäjätiedot ja roolit
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,7 +20,10 @@ public class TaskmanagerApplication implements CommandLineRunner {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private UserRepository userRepository;  // Tämä on oikea tapa
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;  // Käytetään injektoitua PasswordEncoderia
 
     public static void main(String[] args) {
         SpringApplication.run(TaskmanagerApplication.class, args);
@@ -46,8 +49,7 @@ public class TaskmanagerApplication implements CommandLineRunner {
                 LocalDate.of(2025, 3, 28), 3, "Completed", homeCategory));
 
         // Käyttäjät (salasana = käyttäjätunnus)
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        userRepository.save(new AppUser("user", encoder.encode("user"), List.of("ROLE_USER")));
-        userRepository.save(new AppUser("admin", encoder.encode("admin"), List.of("ROLE_ADMIN")));
+        userRepository.save(new AppUser("user", passwordEncoder.encode("user"), List.of("ROLE_USER")));
+        userRepository.save(new AppUser("admin", passwordEncoder.encode("admin"), List.of("ROLE_ADMIN")));
     }
 }

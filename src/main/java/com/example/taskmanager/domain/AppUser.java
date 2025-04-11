@@ -14,7 +14,7 @@ public class AppUser {
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles;
+    private List<String> roles;  // Käyttäjän roolit
 
     public AppUser() {}
 
