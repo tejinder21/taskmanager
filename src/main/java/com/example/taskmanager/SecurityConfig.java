@@ -20,7 +20,7 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/css/**", "/signup", "/saveuser", "/error", "/h2-console/**").permitAll()  // Lisää H2 Console pääsy ilman kirjautumista
+                .requestMatchers("/css/**", "/signup", "/saveuser", "/error", "/h2-console/**").permitAll()  // Sallitaan tietyt reitit ilman kirjautumista
                 .anyRequest().authenticated()  // Muu liikenne vaatii kirjautumisen
             )
             .formLogin(form -> form
@@ -28,12 +28,13 @@ public class SecurityConfig {
                 .defaultSuccessUrl("/tasklist", true)  // Kirjautumisen jälkeen siirrytään tasklist-sivulle
                 .permitAll()  // Sallitaan kirjautumissivulle pääsy
             )
-            .logout(logout -> logout.permitAll());  // Sallitaan uloskirjautuminen
-
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**")); // Poistaa CSRF-suojauksen H2 Consolelta
-
-        // H2 Consolein avaaminen samassa ikkunassa
-        http.headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()));
+            .logout(logout -> logout
+                .logoutUrl("/logout")  // Määritellään uloskirjautumisen URL
+                .logoutSuccessUrl("/login?logout")  // Uloskirjautumisen jälkeen ohjataan kirjautumissivulle
+                .permitAll()  // Sallitaan uloskirjautuminen
+            )
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))  // Poistaa CSRF-suojauksen H2 Consolelta
+            .headers(headers -> headers.frameOptions(options -> options.sameOrigin()));  // H2 Consolein avaaminen samassa ikkunassa
 
         return http.build();
     }

@@ -6,17 +6,29 @@
     <title th:text="#{task.title}">Tehtävälista</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.3/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="bg-indigo-50">
+<body class="bg-blue-50">
 <div class="container mx-auto mt-4 p-4">
-    <h1 class="text-xl font-semibold mb-4" th:text="#{task.list.title}">Tehtävälista</h1>
 
-    <!-- Language Switch -->
-    <div class="mb-4">
-        <a href="?lang=en" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">English</a>
-        <a href="?lang=fi" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 ml-2">Suomi</a>
+    <h1 class="text-4xl font-semibold mb-4" th:text="#{task.list.title}">Tehtävälista</h1>
+
+    <div class="flex justify-between items-center mb-4">
+        <div class="space-x-2">
+            <a href="?lang=en" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">English</a>
+            <a href="?lang=fi" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">Suomi</a>
+            <a th:href="@{/login}" class="bg-red-500 text-white p-2 rounded hover:bg-red-700" th:text="#{task.logout}">Kirjaudu ulos</a>
+        </div>
+
+        <div class="space-x-2">
+            <a href="/addtask" class="bg-green-500 text-white p-2 rounded hover:bg-green-700" th:text="#{task.add}">Lisää tehtävä</a>
+            <a href="/addcategory" class="bg-purple-500 text-white p-2 rounded hover:bg-purple-700" th:text="#{task.addCategory}">Lisää kategoria</a>
+        </div>
     </div>
 
-    <!-- Task Table -->
+    <!-- Priority note -->
+    <div class="mb-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
+        <p><strong th:text="#{task.priority.note}">Huom: Prioriteetti voi olla arvo välillä 1–3, missä 1 on korkein prioriteetti ja 3 matalin.</strong></p>
+    </div>
+
     <table class="table-auto w-full border-collapse border border-gray-300 mb-4">
         <thead>
         <tr class="bg-gray-100">
@@ -35,17 +47,22 @@
             <td th:text="${task.id}" class="px-4 py-2"></td>
             <td th:text="${task.name}" class="px-4 py-2"></td>
             <td th:text="${task.description}" class="px-4 py-2"></td>
-            <td th:text="${task.dueDate}" class="px-4 py-2"></td>
             <td class="px-4 py-2">
+                <!-- Eräpäivän muokkaus -->
+                <input type="date" th:value="${task.dueDate}" th:id="'dueDate_' + ${task.id}" 
+                       class="form-input w-full py-1 px-2 rounded" onchange="updateDueDate(${task.id}, this.value)">
+            </td>
+            <td class="px-4 py-2 text-center">
                 <span th:switch="${task.priority}">
-                    <span th:case="1" class="bg-red-500 text-white py-1 px-2 rounded">Priority 1</span>
-                    <span th:case="2" class="bg-yellow-500 text-black py-1 px-2 rounded">Priority 2</span>
-                    <span th:case="3" class="bg-green-500 text-white py-1 px-2 rounded">Priority 3</span>
+                    <span th:case="1" class="bg-red-500 text-white py-1 px-2 rounded font-bold">1</span>
+                    <span th:case="2" class="bg-yellow-400 text-black py-1 px-2 rounded font-bold">2</span>
+                    <span th:case="3" class="bg-green-500 text-white py-1 px-2 rounded font-bold">3</span>
+                    <span th:case="*">-</span>
                 </span>
             </td>
             <td th:text="${task.status}" class="px-4 py-2"></td>
             <td th:text="${task.category != null ? task.category.name : '—'}" class="px-4 py-2"></td>
-            <td class="px-4 py-2 flex space-x-2"> <!-- Tämä flex asettaa painikkeet riviin -->
+            <td class="px-4 py-2 flex space-x-2">
                 <a th:href="@{/edit/{id}(id=${task.id})}"
                    class="bg-yellow-500 text-white p-2 rounded hover:bg-yellow-700"
                    th:text="#{task.edit}">Muokkaa</a>
@@ -63,11 +80,27 @@
         </tbody>
     </table>
 
-    <!-- Buttons -->
-    <div class="flex space-x-4 mt-4">
-        <a href="/addtask" class="bg-green-500 text-white p-2 rounded hover:bg-green-700" th:text="#{task.add}">Lisää tehtävä</a>
-        <a href="/addcategory" class="bg-purple-500 text-white p-2 rounded hover:bg-purple-700" th:text="#{task.addCategory}">Lisää kategoria</a>
-    </div>
 </div>
+
+<script>
+    function updateDueDate(taskId, newDueDate) {
+        fetch(`/updateDueDate/${taskId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newDueDate),
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Eräpäivä päivitetty onnistuneesti!');
+            } else {
+                console.error('Virhe eräpäivän päivityksessä.');
+            }
+        })
+        .catch(error => console.error('Virhe:', error));
+    }
+</script>
+
 </body>
 </html>
