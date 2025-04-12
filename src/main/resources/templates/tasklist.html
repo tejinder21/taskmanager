@@ -24,6 +24,32 @@
         </div>
     </div>
 
+   <!-- Statistiikka-laatikko -->
+<div class="bg-white border-l-4 border-blue-500 p-4 rounded shadow mb-6 w-full max-w-md">
+    <h2 class="text-xl font-bold mb-2" th:text="#{task.statistics}">🧾 Statistiikka</h2>
+    <p>🗂️ <strong th:text="#{task.total}">Yhteensä:</strong> <span th:text="${totalTasks}">0</span></p>
+    <p>✅ <strong th:text="#{task.completed}">Valmiit:</strong> <span th:text="${completedTasks}">0</span></p>
+    <p>🔧 <strong th:text="#{task.inProgress}">Keskeneräiset:</strong> <span th:text="${inProgressTasks}">0</span></p>
+
+    <!-- 🟩 PROGRESSBAR -->
+    <div class="mt-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1" th:text="#{task.progress}">Edistyminen</label>
+        <div class="w-full bg-gray-200 rounded-full h-6 overflow-hidden shadow-inner">
+            <div class="h-full text-xs text-center text-white bg-green-500 leading-6"
+                 th:style="'width:' + ${progressPercent} + '%'">
+                <span th:text="${#numbers.formatDecimal(progressPercent, 0, 0)} + '%'">0%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Hakukenttä -->
+    <form th:action="@{/tasklist}" method="get" class="mb-4">
+        <input type="text" name="search" class="p-2 border border-gray-300 rounded" placeholder="Etsi tehtävää nimellä" th:value="${search}">
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 ml-2">Hae</button>
+    </form>
+
     <!-- Priority note -->
     <div class="mb-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
         <p><strong th:text="#{task.priority.note}">Huom: Prioriteetti voi olla arvo välillä 1–3, missä 1 on korkein prioriteetti ja 3 matalin.</strong></p>
@@ -48,7 +74,6 @@
             <td th:text="${task.name}" class="px-4 py-2"></td>
             <td th:text="${task.description}" class="px-4 py-2"></td>
             <td class="px-4 py-2">
-                <!-- Eräpäivän muokkaus -->
                 <input type="date" th:value="${task.dueDate}" th:id="'dueDate_' + ${task.id}" 
                        class="form-input w-full py-1 px-2 rounded" onchange="updateDueDate(${task.id}, this.value)">
             </td>

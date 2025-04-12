@@ -4,6 +4,7 @@ import com.example.taskmanager.domain.CategoryRepository;
 import com.example.taskmanager.domain.Task;
 import com.example.taskmanager.domain.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,69 +20,76 @@ public class TaskmanagerController {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    // Näyttää tehtävälistan ja järjestää tehtävät prioriteetin mukaan
     @GetMapping("/tasklist")
-    public String showTaskList(Model model) {
-        List<Task> tasks = taskRepository.findAll();
+    public String showTaskList(@RequestParam(required = false) String search, Model model) {
+        List<Task> tasks;
 
-        // Järjestetään tehtävät prioriteetin mukaan (pienin numero ensin)
+        if (search != null && !search.isEmpty()) {
+            tasks = taskRepository.findByNameContainingIgnoreCase(search);
+        } else {
+            tasks = taskRepository.findAll();
+        }
+
         tasks.sort((task1, task2) -> Integer.compare(task1.getPriority(), task2.getPriority()));
 
         model.addAttribute("tasks", tasks);
-        return "tasklist"; // Palauttaa "tasklist.html"
+        model.addAttribute("search", search);
+
+        // ➕ Statistiikka ja edistymispalkki
+        long totalTasks = tasks.size();
+        long completedTasks = tasks.stream().filter(t -> "Completed".equals(t.getStatus())).count();
+        long inProgressTasks = totalTasks - completedTasks;
+        double progressPercent = totalTasks > 0 ? ((double) completedTasks / totalTasks) * 100 : 0;
+
+        model.addAttribute("totalTasks", totalTasks);
+        model.addAttribute("completedTasks", completedTasks);
+        model.addAttribute("inProgressTasks", inProgressTasks);
+        model.addAttribute("progressPercent", progressPercent);
+
+        return "tasklist";
     }
 
-    // Lomake uuden tehtävän lisäämistä varten
     @GetMapping("/addtask")
     public String addTaskForm(Model model) {
-        model.addAttribute("task", new Task()); // Luo tyhjän Task-olion
-        model.addAttribute("categories", categoryRepository.findAll()); // Hakee kaikki kategoriat
-        return "addtask"; // Palauttaa "addtask.html"
+        model.addAttribute("task", new Task());
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "addtask";
     }
 
-    // Uuden tehtävän tallentaminen
     @PostMapping("/addtask")
     public String addTask(@ModelAttribute Task task) {
-        taskRepository.save(task); // Tallentaa tehtävän tietokantaan
-        return "redirect:/tasklist"; // Uudelleenohjaa tasklist-sivulle
+        taskRepository.save(task);
+        return "redirect:/tasklist";
     }
 
-    // Kirjautumissivu
     @GetMapping("/login")
     public String login() {
-        return "login"; // Palauttaa "login.html"
+        return "login";
     }
 
-    // Lomake tehtävän muokkaamista varten
     @GetMapping("/edit/{id}")
     public String editTask(@PathVariable Long id, Model model) {
-        model.addAttribute("task", taskRepository.findById(id).orElse(null)); // Etsii tehtävän ID:n perusteella
-        model.addAttribute("categories", categoryRepository.findAll()); // Listaa kategoriat
-        return "edittask"; // Palauttaa "edittask.html"
+        model.addAttribute("task", taskRepository.findById(id).orElse(null));
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "edittask";
     }
 
-    // Tehtävän päivittäminen
     @PostMapping("/edit/{id}")
     public String updateTask(@PathVariable Long id, @ModelAttribute Task task) {
-        task.setId(id); // Varmistaa, että ID säilyy
-        taskRepository.save(task); // Tallentaa tehtävän tietokantaan
-        return "redirect:/tasklist"; // Uudelleenohjaa tasklist-sivulle
+        task.setId(id);
+        taskRepository.save(task);
+        return "redirect:/tasklist";
     }
 
-    // Tehtävän poistaminen
     @GetMapping("/delete/{id}")
     public String deleteTask(@PathVariable Long id) {
-        taskRepository.deleteById(id); // Poistaa tehtävän ID:n perusteella
-        return "redirect:/tasklist"; // Uudelleenohjaa tasklist-sivulle
+        taskRepository.deleteById(id);
+        return "redirect:/tasklist";
     }
 
-    // Tehtävän tilan vaihtaminen
     @GetMapping("/toggleStatus/{id}")
     public String toggleTaskStatus(@PathVariable Long id) {
-        // Etsi tehtävä ID:n perusteella
         Task task = taskRepository.findById(id).orElse(null);
-
-        // Jos tehtävä löytyi, vaihdetaan sen tila
         if (task != null) {
             switch (task.getStatus()) {
                 case "Not Started":
@@ -96,11 +104,21 @@ public class TaskmanagerController {
                 default:
                     task.setStatus("Not Started");
             }
-            // Tallenna tehtävä tietokantaan
             taskRepository.save(task);
         }
-
-        // Palauta takaisin tehtävälistalle
         return "redirect:/tasklist";
+    }
+
+    @PostMapping("/updatePriority/{id}")
+    @ResponseBody
+    public ResponseEntity<Void> updatePriority(@PathVariable Long id, @RequestBody Integer newPriority) {
+        Task task = taskRepository.findById(id).orElse(null);
+        if (task != null) {
+            task.setPriority(newPriority);
+            taskRepository.save(task);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
