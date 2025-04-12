@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="container mx-auto mt-4 p-4">
+        <body class="bg-blue-50 bg-light d-flex justify-content-center align-items-center" style="height: 100vh;"></body>
         <h1 class="text-xl font-semibold mb-4" th:text="#{task.add}">Add Task</h1>
         <form action="#" th:action="@{/addtask}" th:object="${task}" method="post">
             <div class="mb-4">
