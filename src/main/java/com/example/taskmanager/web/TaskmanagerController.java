@@ -35,7 +35,7 @@ public class TaskmanagerController {
         model.addAttribute("tasks", tasks);
         model.addAttribute("search", search);
 
-        // ➕ Statistiikka ja edistymispalkki
+        //  Statistiikka ja edistymispalkki
         long totalTasks = tasks.size();
         long completedTasks = tasks.stream().filter(t -> "Completed".equals(t.getStatus())).count();
         long inProgressTasks = totalTasks - completedTasks;

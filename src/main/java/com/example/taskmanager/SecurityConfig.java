@@ -33,7 +33,9 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login?logout")  // Uloskirjautumisen jälkeen ohjataan kirjautumissivulle
                 .permitAll()  // Sallitaan uloskirjautuminen
             )
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))  // Poistaa CSRF-suojauksen H2 Consolelta
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/login", "/h2-console/**")  // Poistetaan CSRF-suojaus /login ja H2-console reiteiltä
+            )
             .headers(headers -> headers.frameOptions(options -> options.sameOrigin()));  // H2 Consolein avaaminen samassa ikkunassa
 
         return http.build();

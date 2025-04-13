@@ -43,11 +43,12 @@
     </div>
 </div>
 
-
     <!-- Hakukenttä -->
     <form th:action="@{/tasklist}" method="get" class="mb-4">
-        <input type="text" name="search" class="p-2 border border-gray-300 rounded" placeholder="Etsi tehtävää nimellä" th:value="${search}">
-        <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 ml-2">Hae</button>
+        <input type="text" name="search" class="p-2 border border-gray-300 rounded" 
+               placeholder="#{task.search.placeholder}" th:value="${search}">
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700 ml-2" 
+                th:text="#{task.search.button}">Hae</button>
     </form>
 
     <!-- Priority note -->

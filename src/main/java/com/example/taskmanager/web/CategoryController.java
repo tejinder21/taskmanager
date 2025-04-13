@@ -31,14 +31,14 @@ public class CategoryController {
     @PostMapping("/savecategory")
     public String saveCategory(@ModelAttribute Category category) {
         categoryRepository.save(category);
-        return "redirect:/tasklist"; // Voit vaihtaa tämän mihin tahansa näkymään, esim. "/categorylist" jos teet
-                                     // myöhemmin listauksen
+        return "redirect:/tasklist"; 
+                                    
     }
 
     // Kategorian poistaminen
     @GetMapping("/deletecategory/{id}")
     public String deleteCategory(@PathVariable Long id) {
         categoryRepository.deleteById(id);
-        return "redirect:/tasklist"; // Sama juttu, voit muuttaa tämän tarpeen mukaan
+        return "redirect:/tasklist"; 
     }
 }
