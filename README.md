@@ -19,3 +19,5 @@ Task Manager on Spring Bootilla toteutettu full stack -tehtävienhallintasovellu
 ## Running the project
 ```bash
 ./mvnw spring-boot:run
+
+<img width="1440" height="856" alt="Screenshot 2026-02-25 at 14 10 14" src="https://github.com/user-attachments/assets/cab05487-2d3d-463c-b688-628373c6baeb" />
